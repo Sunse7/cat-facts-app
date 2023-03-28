@@ -1,0 +1,45 @@
+import { useEffect, useState } from 'react';
+import './App.css';
+import Fact from './Components/Fact';
+import HeaderButton from './Components/HeaderButton';
+
+function App() {
+  const API_cats = 'https://cat-fact.herokuapp.com/facts';
+  const API_capybara = 'https://majazocom.github.io/Data/capybarafacts.json';
+  const [facts, setFacts] = useState([]);
+  const [factCategory, setFactCategory] = useState('cats');
+
+  useEffect(() => {
+    if (factCategory === 'cats') {
+      fetch(API_cats)
+      .then(response => response.json())
+      .then(data => setFacts(data))
+      .catch(err => console.log(err))
+    } else if (factCategory === 'dogs') {
+      setFacts([]);
+      
+    } else if (factCategory === 'capybaras') {
+      fetch(API_capybara)
+      .then(response => response.json())
+      .then(data => setFacts(data))
+      .catch(err => console.log(err))
+    }
+  }, [factCategory]); 
+
+  return (
+    <div className="App">
+     <header className='header'>
+      <HeaderButton title='CAT FACTS' action={() => setFactCategory('cats')} />
+      <HeaderButton title='DOG FACTS' action={() => setFactCategory('dogs')} />
+      <HeaderButton title='CAPYBARA FACTS' action={() => setFactCategory('capybaras')} />
+     </header>
+     <main>
+      {
+        facts && facts.map((fact, i) => <Fact key={i} data={fact} />)
+      }
+     </main>
+    </div>
+  )
+}
+
+export default App
